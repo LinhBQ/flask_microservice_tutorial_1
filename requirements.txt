@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+FLask-Migrate
+Flask-Script
+Flask-Cors
+requests
+mysqlclient
+pika

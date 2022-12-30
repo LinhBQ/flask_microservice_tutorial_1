@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: micro_main
+    hostname: micro_main
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: 'python3 app.py'
+    ports:
+      - 7000:5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - micro-network
+
+  queue:
+    command: 'python3 consumer.py'
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7.22
+    container_name: micro_db_main
+    hostname: micro_db_main
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_DATABASE=main
+      - MYSQL_USER=linh
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root 
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 7001:3306
+    networks:
+      - micro-network
+
+networks:
+  micro-network:
+    driver: bridge
